@@ -1,5 +1,6 @@
 package recipe.bootstrap;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Component
 public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
@@ -29,6 +31,7 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         recipeRepository.saveAll(getRecipes());
+        log.debug("Loading Bootstrap Data");
     }
 
     private List<Recipe> getRecipes() {
@@ -104,13 +107,15 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
         guacRecipe.setDirections("These are the directions for guac");
 
         Notes guacNotes = new Notes();
-        guacNotes.setRecipe(guacRecipe);
+
         guacNotes.setRecipeNotes("These are the notes for guac");
 
+        //should be one method, needed for bidirectional
+        //guacNotes.setRecipe(guacRecipe);
         guacRecipe.setNotes(guacNotes);
 
-        guacRecipe.getIngredients().add(new Ingredient("ripe avocados", new BigDecimal(2), cupsUom, guacRecipe));
-        guacRecipe.getIngredients().add(new Ingredient("kosher salt", new BigDecimal(".5"), teaspoonUom, guacRecipe));
+        guacRecipe.addIngredient(new Ingredient("ripe avocados", new BigDecimal(2), cupsUom));
+        guacRecipe.addIngredient(new Ingredient("kosher salt", new BigDecimal(".5"), teaspoonUom));
 
         guacRecipe.getCategories().add(americanCategory);
         guacRecipe.getCategories().add(mexicanCategory);
@@ -128,13 +133,13 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
 
         Notes tacoNotes = new Notes();
 
-        tacoNotes.setRecipe(tacosRecipe);
-        tacoNotes.setRecipeNotes("These are the notes for tacos");
 
+        tacoNotes.setRecipeNotes("These are the notes for tacos");
+        //tacoNotes.setRecipe(tacosRecipe);
         tacosRecipe.setNotes(tacoNotes);
 
-        tacosRecipe.getIngredients().add(new Ingredient("Ancho chili powder", new BigDecimal(2), tableSpoonUom, tacosRecipe));
-        tacosRecipe.getIngredients().add(new Ingredient("dried oregano", new BigDecimal(1), teaspoonUom, tacosRecipe));
+        tacosRecipe.addIngredient(new Ingredient("Ancho chili powder", new BigDecimal(2), tableSpoonUom));
+        tacosRecipe.addIngredient(new Ingredient("dried oregano", new BigDecimal(1), teaspoonUom));
 
         tacosRecipe.getCategories().add(americanCategory);
         tacosRecipe.getCategories().add(mexicanCategory);
