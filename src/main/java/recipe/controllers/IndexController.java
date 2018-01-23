@@ -1,14 +1,29 @@
 package recipe.controllers;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import recipe.domain.Category;
+import recipe.domain.UnitOfMeasure;
+import recipe.repositories.CategoryRepository;
+import recipe.repositories.UnitOfMeasureRepository;
+import recipe.services.RecipeService;
+
+import java.util.Optional;
 
 @Controller
 public class IndexController {
 
+    private final RecipeService recipeService;
+
+    public IndexController(RecipeService recipeService) {
+        this.recipeService = recipeService;
+    }
+
     @RequestMapping({"", "/", "/index"})
-    public String getIndexPage() {
-        System.out.println("555");
+    public String getIndexPage(Model model) {
+        model.addAttribute("recipes", recipeService.getRecipes());
+
         return "index";
     }
 }
